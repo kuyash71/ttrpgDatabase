@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Character {{ head.character_name }}</title>
+  </head>
+  <body>
+    <a href="/">← Liste</a>
+    <h1>{{ head.character_name }}</h1>
+    <p>
+      Campaign: {{ head.campaign_name }} | Class: {{ head.class_name }} | Level:
+      {{ head.level }}
+    </p>
+
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for m in messages %}
+      <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+
+    <h2>Level Güncelle</h2>
+    <form method="post" action="/characters/{{ head.character_id }}/level">
+      <input name="level" value="{{ head.level }}" />
+      <button type="submit">Güncelle</button>
+    </form>
+
+    <h2>Statlar</h2>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+      {% for s in sheet %}
+      <tr>
+        <td>{{ s.stat_code }}</td>
+        <td>{{ s.stat_name }}</td>
+        <td>{{ s.stat_value }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h2>Class Değiştir</h2>
+<form method="post" action="/characters/{{ head.character_id }}/class">
+  <select name="class_id">
+    {% for cl in classes %}
+      <option value="{{ cl.class_id }}" {% if cl.name == head.class_name %}selected{% endif %}>
+        {{ cl.name }}
+      </option>
+    {% endfor %}
+  </select>
+  <button type="submit">Uygula</button>
+</form>
+<h2>Envanter</h2>
+<table border="1" cellpadding="6">
+  <tr><th>Item</th><th>Qty</th></tr>
+  {% for it in inventory %}
+    <tr><td>{{ it.item_name }}</td><td>{{ it.qty }}</td></tr>
+  {% endfor %}
+</table>
+<h2>Item Transfer</h2>
+<form method="post" action="/transfer">
+  <label>From:</label>
+  <select name="from_character_id">
+    {% for ch in characters %}
+      <option value="{{ ch.character_id }}" {% if ch.character_id == head.character_id %}selected{% endif %}>
+        {{ ch.character_id }} - {{ ch.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>To:</label>
+  <select name="to_character_id">
+    {% for ch in characters %}
+      <option value="{{ ch.character_id }}">
+        {{ ch.character_id }} - {{ ch.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>Item:</label>
+  <select name="item_id">
+    {% for it in items %}
+      <option value="{{ it.item_id }}">{{ it.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Qty:</label>
+  <input name="qty" value="1" />
+
+  <button type="submit">Transfer</button>
+</form>
+
+
+    <h2>Sil</h2>
+    <form
+      method="post"
+      action="/characters/{{ head.character_id }}/delete"
+      onsubmit="return confirm('Silinsin mi?');"
+    >
+      <button type="submit">Karakteri Sil</button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>TTRPG DB Manager</title>
+  </head>
+  <body>
+    <h1>Karakterler</h1>
+
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for m in messages %}
+      <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+
+    <form method="get">
+  <label>Campaign:</label>
+  <select name="campaign_id">
+    {% for c in campaigns %}
+      <option value="{{ c.campaign_id }}" {% if c.campaign_id == campaign_id %}selected{% endif %}>
+        {{ c.campaign_id }} - {{ c.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>Ara:</label>
+  <input name="q" value="{{ q }}" />
+  <button type="submit">Search</button>
+</form>
+
+
+    <h2>Yeni Karakter</h2>
+<form method="post" action="/characters">
+  <label>Campaign:</label>
+  <select name="campaign_id">
+    {% for c in campaigns %}
+      <option value="{{ c.campaign_id }}" {% if c.campaign_id == campaign_id %}selected{% endif %}>
+        {{ c.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>Class:</label>
+  <select name="class_id">
+  {% for cl in classes %}
+    <option value="{{ cl.class_id }}">{{ cl.name }}</option>
+  {% endfor %}
+</select>
+
+
+  <label>İsim:</label>
+  <input name="name" />
+
+  <label>Açıklama:</label>
+  <input name="description" />
+
+  <button type="submit">Oluştur</button>
+</form>
+
+
+
+    <h2>Liste</h2>
+    <table border="1" cellpadding="6">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Level</th>
+        <th>Detay</th>
+      </tr>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.character_id }}</td>
+        <td>{{ r.character_name }}</td>
+        <td>{{ r.class_name }}</td>
+        <td>{{ r.level }}</td>
+        <td><a href="/characters/{{ r.character_id }}">Aç</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
